@@ -58,6 +58,7 @@
                         </BeginStoryboard>
                     </EventTrigger.Actions>
                 </EventTrigger>
+                
             </Style.Triggers>
 
         </Style>
@@ -67,7 +68,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ToggleButton}">
-                            <Border x:Name="brd" CornerRadius="5">
+                            <Border x:Name="brd" CornerRadius="5" Background="Transparent">
                                 <Border.BorderThickness>
                                     <Thickness Left="2" 
                                                Top="2" 
@@ -83,28 +84,71 @@
                                         </SolidColorBrush.Color>
                                     </SolidColorBrush>
                                 </Border.BorderBrush>
-                                <Viewbox Margin="2,0">
+                                <Viewbox Margin="2,0" 
+                                         RenderTransformOrigin="0.5 0.5">
                                     <Path Data="M 0,5 L15,20 L30,5 L15,10 L0,5"
                                           Fill="blue" Stroke="Black"
-                                          StrokeThickness="1"/>
+                                          StrokeThickness="1" x:Name="path"/>
+                                    
                                     <Viewbox.RenderTransform>
                                         <RotateTransform Angle="0" x:Name="rot"
-                                                         CenterX="0.5"
-                                                         CenterY="0.5"/>
+                                                         />
+
                                     </Viewbox.RenderTransform>
                                 </Viewbox>
                             </Border>
 
                             <ControlTemplate.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                                                Duration="{StaticResource AnimDuration}"
+                                                Storyboard.TargetProperty="Fill.Color"
+                                                Storyboard.TargetName="path"
+                                                To="Orange"
+                                                />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                                                Duration="{StaticResource AnimDuration}"
+                                                Storyboard.TargetProperty="Fill.Color"
+                                                Storyboard.TargetName="path"
+                                                To="Blue"
+                                                />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                
                                 <EventTrigger RoutedEvent="Checked">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation/>
+                                            <DoubleAnimation
+                                                Duration="0:0:0:0.01"
+                                                Storyboard.TargetName="rot"
+                                                Storyboard.TargetProperty="Angle"
+                                                To="180"
+                                                />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
 
                                 <EventTrigger RoutedEvent="Unchecked">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Duration="0:0:0:0.01"
+                                                Storyboard.TargetName="rot"
+                                                Storyboard.TargetProperty="Angle"
+                                                To="0"
+                                                />
+                                        </Storyboard>
+                                    </BeginStoryboard>
                                 </EventTrigger>
                             </ControlTemplate.Triggers>
 
@@ -132,6 +176,13 @@
                           Style="{StaticResource ToggleButtonStyle}"
                           Grid.Column="2"
                           Content="Press"/>
+            <Popup Placement="Bottom" IsOpen="{Binding ElementName=ToglButton, 
+                Path=IsChecked, UpdateSourceTrigger=PropertyChanged}"
+                   StaysOpen="False" >
+                <Border Width="274" Height="274" Background="Transparent">
+                    <local:CustomCalendar/>
+                </Border>
+            </Popup>
         </Grid>
     </Border>
 </UserControl>

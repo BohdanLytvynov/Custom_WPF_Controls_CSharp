@@ -77,17 +77,14 @@ namespace CustomControlsLibrary
         // Using a DependencyProperty as the backing store for YearMonthTxtBlockStyle.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty YearMonthTxtBlockStyleProperty;
 
-
-
-        public Style MainGridStyle
+        public Style MainBorderStyle
         {
-            get { return (Style)GetValue(MainGridStyleProperty); }
-            set { SetValue(MainGridStyleProperty, value); }
+            get { return (Style)GetValue(MainBorderStyleProperty); }
+            set { SetValue(MainBorderStyleProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MainGridStyle.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MainGridStyleProperty;
-
+        // Using a DependencyProperty as the backing store for MainBorderStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MainBorderStyleProperty;
 
 
         public Style DayNameStyle
@@ -200,12 +197,64 @@ namespace CustomControlsLibrary
         // Using a DependencyProperty as the backing store for SelectedDate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedDateProperty;
 
+        #region Calendar items modifiers
+
+
+
+        public double DayButtonWidthModifier
+        {
+            get { return (double)GetValue(DayButtonWidthModifierProperty); }
+            set { SetValue(DayButtonWidthModifierProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DayButtonWidthModifier.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DayButtonWidthModifierProperty;
+
+
+
+        public double DayButtonHeightModifier
+        {
+            get { return (double)GetValue(DayButtonHeightModifierProperty); }
+            set { SetValue(DayButtonHeightModifierProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DayButtonHeightModifier.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DayButtonHeightModifierProperty;
+
+
+
+        public double MonthButtonWidthModifier
+        {
+            get { return (double)GetValue(MonthButtonWidthModifierProperty); }
+            set { SetValue(MonthButtonWidthModifierProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MonthButtonWidthModifier.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MonthButtonWidthModifierProperty;
+
+
+
+
+        public double MonthButtonHeightModifier
+        {
+            get { return (double)GetValue(MonthButtonHeightModifierProperty); }
+            set { SetValue(MonthButtonHeightModifierProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MonthButtonHeightModifier.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MonthButtonHeightModifierProperty;
+
+
+
+
+        #endregion
+
         #endregion
 
         #region Fields
 
         #region Styles
-        
+
         private Button m_highlited;
 
         #endregion
@@ -238,10 +287,22 @@ namespace CustomControlsLibrary
 
         #endregion
 
+        #region Calendar Items Size modifiers
+
+        double m_DayButtonWidthMod;
+
+        double m_DayButtonHeightMod;
+
+        double m_MonthButtonWidthMod;
+
+        double m_MonthButtonHeightMod;
+
+        #endregion
+
         #endregion
 
         #region Properties
-       
+
         public byte StringFormatType
         {
             get => m_StringFormatType;
@@ -340,14 +401,39 @@ namespace CustomControlsLibrary
             typeof(CustomCalendar), new PropertyMetadata(default, OnNextButtonStylePropertyChanged
             ));
 
-            MainGridStyleProperty =
-            DependencyProperty.Register("MainGridStyle", typeof(Style), typeof(CustomCalendar), 
-            new PropertyMetadata(default, OnMainGridStylePropertyChanged));
+            MainBorderStyleProperty =
+            DependencyProperty.Register("MainBorderStyle", typeof(Style), 
+            typeof(CustomCalendar), new PropertyMetadata(default, OnMainBorderStylePropertyChanged));
 
             DayNameStyleProperty =
             DependencyProperty.Register("DayNameStyle", typeof(Style), typeof(CustomCalendar), 
             new PropertyMetadata(default, OnDayNameStylePropertyChanged));
             #endregion
+
+            #endregion
+
+            #region Calendar Items Modifier
+
+            DayButtonWidthModifierProperty =
+            DependencyProperty.Register("DayButtonWidthModifier", 
+            typeof(double), typeof(CustomCalendar), new PropertyMetadata(-2.0,
+            OnDayButtonWidthModifierPropertyChanged));
+
+            DayButtonHeightModifierProperty =
+            DependencyProperty.Register("DayButtonHeightModifier", 
+            typeof(double), typeof(CustomCalendar), new PropertyMetadata(-2.0,
+            OnDayButtonHeightModifierPropertyChanged));
+
+            MonthButtonWidthModifierProperty =
+            DependencyProperty.Register("MonthButtonWidthModifier", 
+            typeof(double), typeof(CustomCalendar), new PropertyMetadata(-2.0,
+            OnMonthButtonWidthModifierPropertyChanged));
+
+            MonthButtonHeightModifierProperty =
+            DependencyProperty.Register("MonthButtonHeightModifier", 
+            typeof(double), typeof(CustomCalendar), new PropertyMetadata(-4.0,
+            OnMonthButtonHeightModifierPropertyChanged));
+
 
             #endregion
 
@@ -365,9 +451,13 @@ namespace CustomControlsLibrary
 
             m_ClickCount = 0;
             
-            this.brd.Style = (Style)this.Resources["CalendarBorderStyle"];
+            m_DayButtonHeightMod = -2;
 
-            this.PrevButton.Style = (Style)this.Resources["PrevButtonStyle"];
+            m_DayButtonWidthMod = -2;
+
+            m_MonthButtonHeightMod = -2;
+
+            m_MonthButtonWidthMod = -4;
         }
 
         #endregion
@@ -380,24 +470,26 @@ namespace CustomControlsLibrary
 
         private double CalculateDayButtonWidth()
         {
-            return (m_ItemWidth - (this.brd.Margin.Left * 2 + this.PanelMain.Margin.Left * 2)) / 7;
+            return (m_ItemWidth - (this.brd.Margin.Left * 2 + this.PanelMain.Margin.Left * 2 + this.MainBorder.Margin.Left*2)) / 7;
         }
 
         private double CalculateDayButtonHeight()
         {
             return (m_ItemHeight - (this.MainGrid.RowDefinitions[0].Height.Value +
-                this.MainGrid.RowDefinitions[1].Height.Value + this.brd.Margin.Top * 2 + this.PanelMain.Margin.Top * 2)) / 6;
+                this.MainGrid.RowDefinitions[1].Height.Value + this.brd.Margin.Top * 2 + this.PanelMain.Margin.Top * 2
+                + this.MainBorder.Margin.Top * 2)) / 6;
         }
 
         private double CalculateMonthButtonWidth()
         {
-            return (m_ItemWidth - (this.brd.Margin.Left * 2 + this.PanelMain.Margin.Left * 2)) / 4;
+            return (m_ItemWidth - (this.brd.Margin.Left * 2 + this.PanelMain.Margin.Left * 2 + this.MainBorder.Margin.Left * 2)) / 4;
         }
 
         private double CalculateMonthButtonHeight()
         {
             return (m_ItemHeight - (this.MainGrid.RowDefinitions[0].Height.Value +
-               this.MainGrid.RowDefinitions[1].Height.Value + this.brd.Margin.Top * 2 + this.PanelMain.Margin.Top * 2)) / 3;
+               this.MainGrid.RowDefinitions[1].Height.Value + this.brd.Margin.Top * 2 + this.PanelMain.Margin.Top * 2
+               + this.MainBorder.Margin.Top * 2)) / 3;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -406,13 +498,13 @@ namespace CustomControlsLibrary
 
             m_ItemHeight = e.NewSize.Height;
 
-            m_dayButtonWidth = CalculateDayButtonWidth() - 1;
+            m_dayButtonWidth = CalculateDayButtonWidth() + m_DayButtonWidthMod;
 
-            m_dayButtonHeight = CalculateDayButtonHeight() - 1;
+            m_dayButtonHeight = CalculateDayButtonHeight() + m_DayButtonHeightMod;
 
-            m_MonthButtonWidth = CalculateMonthButtonWidth() - 1;
+            m_MonthButtonWidth = CalculateMonthButtonWidth() + m_MonthButtonWidthMod;
 
-            m_MonthButtonHeight = CalculateMonthButtonHeight() - 2;
+            m_MonthButtonHeight = CalculateMonthButtonHeight() + m_MonthButtonHeightMod;
 
             GenerateDaysOfWeek(m_dayButtonWidth, m_dayButtonHeight);
 
@@ -1011,11 +1103,11 @@ namespace CustomControlsLibrary
             }
         }
 
-        private static void OnMainGridStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnMainBorderStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var calendar = (d as CustomCalendar);
 
-            SwapStyle(calendar, calendar.MainGrid, "MainGridSyle", (Style)e.NewValue);            
+            SwapStyle(calendar, calendar.MainBorder, "MainBorderStyle", (Style)e.NewValue);            
         }
 
         private static void OnNextButtonStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -1091,6 +1183,38 @@ namespace CustomControlsLibrary
             var calendar = (d as CustomCalendar);
 
             SwapStyle(calendar, null, "HighlightedYearButtonStyle", (Style)e.NewValue);
+        }
+
+        #endregion
+
+        #region On Size Mod Change
+
+        private static void OnMonthButtonHeightModifierPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var calendar = (d as CustomCalendar);
+
+            calendar.m_MonthButtonHeightMod = (double)e.NewValue;
+        }
+
+        private static void OnMonthButtonWidthModifierPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var calendar = (d as CustomCalendar);
+
+            calendar.m_MonthButtonWidthMod = (double)e.NewValue;
+        }
+
+        private static void OnDayButtonHeightModifierPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var calendar = (d as CustomCalendar);
+
+            calendar.m_DayButtonHeightMod = (double)e.NewValue;
+        }
+
+        private static void OnDayButtonWidthModifierPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var calendar = (d as CustomCalendar);
+
+            calendar.m_DayButtonWidthMod = (double)e.NewValue;
         }
 
         #endregion
