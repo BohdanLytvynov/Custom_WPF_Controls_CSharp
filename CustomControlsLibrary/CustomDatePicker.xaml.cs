@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,72 @@ namespace CustomControlsLibrary
     /// </summary>
     public partial class CustomDatePicker : UserControl
     {
+        #region Dep Properties
+
+
+
+       
+
+
+
+        #region Styles
+
+        #endregion
+
+        #region Fields
+
+
+
+        #endregion
+
+        #region Properties
+
+
+
+
+
+        #endregion
+
+        #endregion
+        #region Static Ctor
+
+        static CustomDatePicker()
+        {
+           
+
+            #region Styles
+
+            #endregion
+        }
+
+        
+
+
+
+        #endregion
+
+        #region Ctor
+
         public CustomDatePicker()
         {
-            InitializeComponent();
+            InitializeComponent();            
+
         }
+
+
+
+
+
+        #endregion
+
+
+
+        #region Methods
+
+        #region On Properties Changed
+       
+        #endregion
+
+        #endregion
     }
 }

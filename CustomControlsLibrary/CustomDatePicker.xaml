@@ -4,15 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CustomControlsLibrary"
+             xmlns:conv="clr-namespace:CustomControlsLibrary.WPFConverters"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="400"
              MinHeight="40"
              MinWidth="250">
     <UserControl.Resources>
 
+        
         <!--#region Fields -->
 
-        <Duration x:Key="AnimDuration">0:0:0:0.5
+        <conv:DateTimeToStringConverter x:Key="DateToString"/>
+
+        
+
+            <Duration x:Key="AnimDuration">0:0:0:0.5
         </Duration>
 
         <!--#endregion-->
@@ -171,7 +177,9 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="DatePresenter"
                    Grid.Column="0"
-                       />
+                       Text="{Binding ElementName=CustCalendar, Path=SelectedDate, UpdateSourceTrigger=PropertyChanged,
+                Mode=TwoWay,
+                Converter={StaticResource DateToString}}"/>
             <ToggleButton x:Name="ToglButton"
                           Style="{StaticResource ToggleButtonStyle}"
                           Grid.Column="2"
@@ -180,7 +188,8 @@
                 Path=IsChecked, UpdateSourceTrigger=PropertyChanged}"
                    StaysOpen="False" >
                 <Border Width="274" Height="274" Background="Transparent">
-                    <local:CustomCalendar/>
+                    <local:CustomCalendar x:Name="CustCalendar"
+                                          />
                 </Border>
             </Popup>
         </Grid>

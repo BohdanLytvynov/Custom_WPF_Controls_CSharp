@@ -8,6 +8,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Canvas>
-        <custControlls:CustomDatePicker Canvas.Left="20" Canvas.Top="20" Width="300"/>
+        <custControlls:CustomDatePicker Canvas.Left="20" Canvas.Top="20" Width="300" >
+           
+        </custControlls:CustomDatePicker>
     </Canvas>
 </Window>

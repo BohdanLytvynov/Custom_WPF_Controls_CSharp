@@ -28,7 +28,16 @@ namespace CustomControlsLibrary
     public partial class CustomCalendar : UserControl, INotifyPropertyChanged
     {
 
+        #region Events
+        public event Action<object, DateTime> OnDateSelected;
+        #endregion
+
         #region DProperty
+
+        #region Reference to this
+
+        #endregion
+
 
         #region Styles
 
@@ -975,11 +984,7 @@ namespace CustomControlsLibrary
         }
 
         private void HighLightSelectedYear()
-        {
-            //var low = CurrentDate.Year;
-
-            //var up = (CurrentDate.Year + 11);
-
+        {            
             var now = DateTime.Now;
 
             DateTime date = default;
@@ -1227,6 +1232,8 @@ namespace CustomControlsLibrary
             var This = obj as CustomCalendar;
 
             This.HighlightSelectedDate();
+
+            This.OnDateSelected?.Invoke(This, This.SelectedDate);
         }
 
         #endregion
