@@ -317,9 +317,18 @@
                 <Setter Property="ItemsControl.FontSize" Value="20"/>
             </Style.Setters>
         </Style>
-        
+
+        <Style x:Key="MainBorderStyle" TargetType="Border">
+            <Style.Setters>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style.Setters>
+        </Style>
+
     </UserControl.Resources>
-    <Grid x:Name="MainGrid">
+    <Border x:Name="MainBorder" Style="{StaticResource MainBorderStyle}">
+        <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="25"/>
@@ -351,38 +360,6 @@
                             <Binding Path="UpperDateLimit" UpdateSourceTrigger="PropertyChanged"/>
                         </MultiBinding>
                     </TextBlock.Text>
-                
-                <!--<TextBlock.Foreground>
-                    <SolidColorBrush x:Name="fg" Color="{StaticResource InitDateTextBlockForeground}"/>
-                </TextBlock.Foreground>
-                <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="MouseEnter">
-                        <EventTrigger.Actions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="fg"
-                                                    Storyboard.TargetProperty="Color"
-                                                    To="{StaticResource MouseOverDateTextBlockForeground}" 
-                                                    Duration="{StaticResource AnimDur}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger.Actions>
-                    </EventTrigger>
-
-                    <EventTrigger RoutedEvent="MouseLeave">
-                        <EventTrigger.Actions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="fg"
-                                                    Storyboard.TargetProperty="Color"
-                                                    To="White" 
-                                                    Duration="{StaticResource AnimDur}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger.Actions>
-                    </EventTrigger>
-                </TextBlock.Triggers>-->
-
                 </TextBlock>
             </Grid>
             <StackPanel Orientation="Horizontal" Grid.Row="1" 
@@ -393,5 +370,6 @@
                 <WrapPanel Margin="4"  x:Name="PanelMain"/>
             </Border>
         </Grid>
-   
+    </Border>
+
 </UserControl>
