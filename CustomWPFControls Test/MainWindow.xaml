@@ -7,9 +7,24 @@
         xmlns:custControlls="clr-namespace:CustomControlsLibrary;assembly=CustomControlsLibrary"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+
+        <Style x:Key="MB" TargetType="Border">
+            <Style.Setters>
+                <Setter Property="Background" Value="Green"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style.Setters>
+        </Style>
+               
+    </Window.Resources>
     <Canvas>
-        <custControlls:CustomDatePicker Canvas.Left="20" Canvas.Top="20" Width="300" >
-           
+        <custControlls:CustomDatePicker Canvas.Left="20" Canvas.Top="20" Width="300"
+                                        >
+            <custControlls:CustomDatePicker.Calendar>
+                <custControlls:CustomCalendar 
+                                      MainBorderStyle="{StaticResource MB}"/>
+            </custControlls:CustomDatePicker.Calendar>
         </custControlls:CustomDatePicker>
     </Canvas>
 </Window>

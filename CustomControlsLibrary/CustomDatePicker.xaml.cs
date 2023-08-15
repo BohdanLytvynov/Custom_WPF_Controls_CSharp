@@ -25,7 +25,15 @@ namespace CustomControlsLibrary
 
 
 
-       
+
+        public CustomCalendar Calendar
+        {
+            get { return (CustomCalendar)GetValue(CalendarProperty); }
+            set { SetValue(CalendarProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Calendar.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CalendarProperty;
 
 
 
@@ -52,17 +60,15 @@ namespace CustomControlsLibrary
 
         static CustomDatePicker()
         {
-           
+            CalendarProperty =
+             DependencyProperty.Register("Calendar", typeof(CustomCalendar),
+                 typeof(CustomDatePicker), new PropertyMetadata(null, OnCalendarPropertyChanged));
 
             #region Styles
 
             #endregion
         }
-
-        
-
-
-
+      
         #endregion
 
         #region Ctor
@@ -84,7 +90,11 @@ namespace CustomControlsLibrary
         #region Methods
 
         #region On Properties Changed
-       
+        private static void OnCalendarPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as CustomDatePicker).Popup.Child = (CustomCalendar)e.NewValue;
+        }
+
         #endregion
 
         #endregion

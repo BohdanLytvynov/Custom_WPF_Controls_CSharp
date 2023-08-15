@@ -177,20 +177,15 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="DatePresenter"
                    Grid.Column="0"
-                       Text="{Binding ElementName=CustCalendar, Path=SelectedDate, UpdateSourceTrigger=PropertyChanged,
-                Mode=TwoWay,
-                Converter={StaticResource DateToString}}"/>
+               />
             <ToggleButton x:Name="ToglButton"
                           Style="{StaticResource ToggleButtonStyle}"
                           Grid.Column="2"
                           Content="Press"/>
             <Popup Placement="Bottom" IsOpen="{Binding ElementName=ToglButton, 
                 Path=IsChecked, UpdateSourceTrigger=PropertyChanged}"
-                   StaysOpen="False" >
-                <Border Width="274" Height="274" Background="Transparent">
-                    <local:CustomCalendar x:Name="CustCalendar"
-                                          />
-                </Border>
+                   StaysOpen="False" x:Name="Popup" Width="270" Height="270">
+                               
             </Popup>
         </Grid>
     </Border>
