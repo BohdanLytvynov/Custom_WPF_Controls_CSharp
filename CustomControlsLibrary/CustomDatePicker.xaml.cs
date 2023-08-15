@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CustomControlsLibrary.WPFConverters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,9 +25,6 @@ namespace CustomControlsLibrary
     {
         #region Dep Properties
 
-
-
-
         public CustomCalendar Calendar
         {
             get { return (CustomCalendar)GetValue(CalendarProperty); }
@@ -35,27 +34,61 @@ namespace CustomControlsLibrary
         // Using a DependencyProperty as the backing store for Calendar.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CalendarProperty;
 
-
-
         #region Styles
+
+        public Style MainBorderStyle
+        {
+            get { return (Style)GetValue(MainBorderStyleProperty); }
+            set { SetValue(MainBorderStyleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MainBorderStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MainBorderStyleProperty;
+
+
+
+        public Style DatePresenterStyle
+        {
+            get { return (Style)GetValue(DatePresenterStyleProperty); }
+            set { SetValue(DatePresenterStyleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DatePresenterStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DatePresenterStyleProperty;
+
+
+
+        public Style ToggleButtonStyle
+        {
+            get { return (Style)GetValue(ToggleButtonStyleProperty); }
+            set { SetValue(ToggleButtonStyleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ToggleButtonStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ToggleButtonStyleProperty;
+
+
+
+        public Style PopupStyle
+        {
+            get { return (Style)GetValue(PopupStyleProperty); }
+            set { SetValue(PopupStyleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PopupStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PopupStyleProperty;
+
+
+        #endregion
 
         #endregion
 
         #region Fields
 
-
-
-        #endregion
-
-        #region Properties
-
-
-
-
+        DateTimeToStringConverter m_dateToStr;
 
         #endregion
 
-        #endregion
         #region Static Ctor
 
         static CustomDatePicker()
@@ -66,33 +99,109 @@ namespace CustomControlsLibrary
 
             #region Styles
 
+            MainBorderStyleProperty =
+            DependencyProperty.Register("MainBorderStyle", typeof(Style), 
+            typeof(CustomDatePicker), new PropertyMetadata(default,
+            OnMainBorderStylePropertyChanged));
+
+            DatePresenterStyleProperty =
+            DependencyProperty.Register("DatePresenterStyle", typeof(Style), 
+            typeof(CustomDatePicker), new PropertyMetadata(default,
+            OnDatePresenterStylePropertyChanged));
+
+            ToggleButtonStyleProperty =
+            DependencyProperty.Register("ToggleButtonStyle", 
+            typeof(Style), typeof(CustomDatePicker), new PropertyMetadata(default,
+            OnToggleButtonStylePropertyChanged));
+
+            PopupStyleProperty =
+            DependencyProperty.Register("PopupStyle", typeof(Style),
+            typeof(CustomDatePicker), new PropertyMetadata(default,
+            OnPopupStylePropertyChanged));
+
             #endregion
         }
-      
+        
+
         #endregion
 
         #region Ctor
 
         public CustomDatePicker()
         {
-            InitializeComponent();            
+            InitializeComponent();
 
+            m_dateToStr = new DateTimeToStringConverter();
         }
 
-
-
-
-
         #endregion
-
-
 
         #region Methods
 
         #region On Properties Changed
+
+        #region Styles
+
+        private static void SwapStyle(CustomDatePicker This, FrameworkElement element, string key, Style newStyle)
+        {
+            if (This.Resources.Contains(key))
+                This.Resources[key] = newStyle;
+            else
+                This.Resources.Add(key, newStyle);
+
+            if (element != null)
+                element.Style = (Style)This.Resources[key];
+        }
+
+        private static void OnMainBorderStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var datePicker = d as CustomDatePicker;
+
+            SwapStyle(datePicker, datePicker.MainBorder, "MainBorderStyle", (Style)e.NewValue);
+        }
+
+        private static void OnDatePresenterStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var datePicker = d as CustomDatePicker;
+
+            SwapStyle(datePicker, datePicker.DatePresenter, "DatePresenterStyle", (Style)e.NewValue);
+        }
+
+        private static void OnToggleButtonStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var datePicker = d as CustomDatePicker;
+
+            SwapStyle(datePicker, datePicker.ToglButton, "ToggleButtonStyle", (Style)e.NewValue);
+        }
+
+        private static void OnPopupStylePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var datePicker = d as CustomDatePicker;
+
+            SwapStyle(datePicker, datePicker.Popup, "PopupStyle", (Style)e.NewValue);
+        }
+
+        #endregion
+
         private static void OnCalendarPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as CustomDatePicker).Popup.Child = (CustomCalendar)e.NewValue;
+            var Cust = (CustomCalendar)e.NewValue;
+
+            var This = (d as CustomDatePicker);
+
+            This.Popup.Child = (CustomCalendar)e.NewValue;
+
+            Cust.OnDateSelected += This.Cust_OnDateSelected;
+        }
+
+        private void Cust_OnDateSelected(object arg1, DateTime arg2)
+        {
+            if(m_dateToStr == null)
+                m_dateToStr=new DateTimeToStringConverter();
+
+            this.DatePresenter.Text = (string)m_dateToStr.Convert(arg2, null, null, null);
+
+            this.ToglButton.IsChecked = false;            
         }
 
         #endregion

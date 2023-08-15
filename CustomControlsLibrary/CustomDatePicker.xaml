@@ -13,11 +13,7 @@
 
         
         <!--#region Fields -->
-
-        <conv:DateTimeToStringConverter x:Key="DateToString"/>
-
-        
-
+               
             <Duration x:Key="AnimDuration">0:0:0:0.5
         </Duration>
 
@@ -164,6 +160,21 @@
             </Style.Setters>
         </Style>
 
+        <Style x:Key="DatePresenterStyle" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="14"/>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="PopupStyle" TargetType="Popup">
+            <Style.Setters>
+                <Setter Property="Placement" Value="Bottom"/>
+                <Setter Property="StaysOpen" Value="False"/>
+                <Setter Property="Width" Value="270"/>
+                <Setter Property="Height" Value="270"/>
+            </Style.Setters>
+        </Style>
+
         <!--#endregion--> 
 
     </UserControl.Resources>
@@ -177,14 +188,15 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="DatePresenter"
                    Grid.Column="0"
+                  Style="{StaticResource DatePresenterStyle}"
                />
             <ToggleButton x:Name="ToglButton"
                           Style="{StaticResource ToggleButtonStyle}"
                           Grid.Column="2"
                           Content="Press"/>
-            <Popup Placement="Bottom" IsOpen="{Binding ElementName=ToglButton, 
+            <Popup  IsOpen="{Binding ElementName=ToglButton, 
                 Path=IsChecked, UpdateSourceTrigger=PropertyChanged}"
-                   StaysOpen="False" x:Name="Popup" Width="270" Height="270">
+                    x:Name="Popup" Style="{StaticResource PopupStyle}">
                                
             </Popup>
         </Grid>

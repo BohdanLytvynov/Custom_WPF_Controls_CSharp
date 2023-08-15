@@ -11,20 +11,24 @@
 
         <Style x:Key="MB" TargetType="Border">
             <Style.Setters>
-                <Setter Property="Background" Value="Green"/>
+                <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderBrush" Value="Black"/>
                 <Setter Property="BorderThickness" Value="2"/>
             </Style.Setters>
         </Style>
-               
+
     </Window.Resources>
     <Canvas>
-        <custControlls:CustomDatePicker Canvas.Left="20" Canvas.Top="20" Width="300"
+        <custControlls:CustomDatePicker x:Name="DatePicker" Canvas.Left="20" Canvas.Top="20" Width="300"
                                         >
             <custControlls:CustomDatePicker.Calendar>
                 <custControlls:CustomCalendar 
-                                      MainBorderStyle="{StaticResource MB}"/>
+                                      MainBorderStyle="{StaticResource MB}"
+                                      
+                    />
             </custControlls:CustomDatePicker.Calendar>
         </custControlls:CustomDatePicker>
+        <Calendar Canvas.Left="501" Canvas.Top="153" SelectedDate="{Binding ElementName=DatePicker,
+            Path=Calendar.SelectedDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
     </Canvas>
 </Window>
