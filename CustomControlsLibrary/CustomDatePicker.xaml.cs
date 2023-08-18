@@ -26,14 +26,16 @@ namespace CustomControlsLibrary
     {
         #region Dep Properties
 
-        public DateTime SelectedDate
+
+
+        public DateTime ChosenDate
         {
-            get { return (DateTime)GetValue(SelectedDateProperty); }
-            set { SetValue(SelectedDateProperty, value); }
+            get { return (DateTime)GetValue(ChosenDateProperty); }
+            set { SetValue(ChosenDateProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for SelectedDate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedDateProperty;
+        // Using a DependencyProperty as the backing store for ChosenDate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ChosenDateProperty;
 
 
         public CustomCalendar Calendar
@@ -104,9 +106,9 @@ namespace CustomControlsLibrary
 
         static CustomDatePicker()
         {
-            SelectedDateProperty =
-             DependencyProperty.Register("SelectedDate", typeof(DateTime), 
-             typeof(CustomCalendar), new PropertyMetadata(new DateTime()));
+            ChosenDateProperty =
+            DependencyProperty.Register("ChosenDate", typeof(DateTime), 
+            typeof(CustomDatePicker), new PropertyMetadata(new DateTime(), OnChosenDatePropertyChanged));
 
             CalendarProperty =
              DependencyProperty.Register("Calendar", typeof(CustomCalendar),
@@ -136,7 +138,9 @@ namespace CustomControlsLibrary
 
             #endregion
         }
+
         
+
 
         #endregion
 
@@ -213,19 +217,22 @@ namespace CustomControlsLibrary
                 Mode = BindingMode.TwoWay
             };
 
-            This.SetBinding(SelectedDateProperty, binding);
-
-            Binding txtbind = new Binding("Text")
-            {
-                Source = This.DatePresenter,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                Mode = BindingMode.OneWay,
-                Converter = new StringToDateTime()
-            };
-
-            This.SetBinding(SelectedDateProperty, txtbind);
+            This.SetBinding(ChosenDateProperty, binding);
+                        
         }
-        
+
+        private static void OnChosenDatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var This = d as CustomDatePicker;
+
+            if (This.m_dateToStr == null)
+                This.m_dateToStr = new DateTimeToStringConverter();
+
+            This.DatePresenter.Text = (string)This.m_dateToStr.Convert(e.NewValue, null, null, null);
+
+            This.ToglButton.IsChecked = false;
+        }
+
         #endregion
 
         #endregion
