@@ -1,4 +1,5 @@
-﻿using CustomControlsLibrary.WPFConverters;
+﻿using CustomControlsLibrary.Converters;
+using CustomControlsLibrary.WPFConverters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,16 @@ namespace CustomControlsLibrary
     public partial class CustomDatePicker : UserControl
     {
         #region Dep Properties
+
+        public DateTime SelectedDate
+        {
+            get { return (DateTime)GetValue(SelectedDateProperty); }
+            set { SetValue(SelectedDateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedDate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedDateProperty;
+
 
         public CustomCalendar Calendar
         {
@@ -93,6 +104,10 @@ namespace CustomControlsLibrary
 
         static CustomDatePicker()
         {
+            SelectedDateProperty =
+             DependencyProperty.Register("SelectedDate", typeof(DateTime), 
+             typeof(CustomCalendar), new PropertyMetadata(new DateTime()));
+
             CalendarProperty =
              DependencyProperty.Register("Calendar", typeof(CustomCalendar),
                  typeof(CustomDatePicker), new PropertyMetadata(null, OnCalendarPropertyChanged));
@@ -190,20 +205,27 @@ namespace CustomControlsLibrary
             var This = (d as CustomDatePicker);
 
             This.Popup.Child = (CustomCalendar)e.NewValue;
+            
+            Binding binding = new Binding("SelectedDate")
+            {
+                Source = Cust,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                Mode = BindingMode.TwoWay
+            };
 
-            Cust.OnDateSelected += This.Cust_OnDateSelected;
+            This.SetBinding(SelectedDateProperty, binding);
+
+            Binding txtbind = new Binding("Text")
+            {
+                Source = This.DatePresenter,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                Mode = BindingMode.OneWay,
+                Converter = new StringToDateTime()
+            };
+
+            This.SetBinding(SelectedDateProperty, txtbind);
         }
-
-        private void Cust_OnDateSelected(object arg1, DateTime arg2)
-        {
-            if(m_dateToStr == null)
-                m_dateToStr=new DateTimeToStringConverter();
-
-            this.DatePresenter.Text = (string)m_dateToStr.Convert(arg2, null, null, null);
-
-            this.ToglButton.IsChecked = false;            
-        }
-
+        
         #endregion
 
         #endregion
